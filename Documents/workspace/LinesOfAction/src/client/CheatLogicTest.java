@@ -8,8 +8,10 @@ import java.util.Map;
 import client.GameApi.EndGame;
 import client.GameApi.Operation;
 import client.GameApi.Set;
+import client.GameApi.SetTurn;
 import client.GameApi.VerifyMove;
 import client.GameApi.VerifyMoveDone;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -32,10 +34,12 @@ public class CheatLogicTest {
 	// helper function to get an VerifyMove instance
 	private VerifyMove move(int lastMovePlayerId, Map<String, Object> lastState, List<Operation> lastMove) {
 		Map<String,Object> winfo = new HashMap<String,Object>(); winfo.put(PLAYER_ID,wId);
-		Map<String,Object> binfo = new HashMap<String,Object>(); winfo.put(PLAYER_ID,bId);	
+		Map<String,Object> binfo = new HashMap<String,Object>(); binfo.put(PLAYER_ID,bId);	
 		ArrayList<Map<String,Object>> playersInfo = new ArrayList<Map<String,Object>>(); 
 		playersInfo.add(winfo); playersInfo.add(binfo); 
-		return new VerifyMove(wId, playersInfo,emptyState,lastState, lastMove, lastMovePlayerId);
+		Map<Integer, Integer> playerIdToNumberOfTokensInPot = new HashMap<Integer, Integer>();
+		playerIdToNumberOfTokensInPot.put(wId,0);playerIdToNumberOfTokensInPot.put(bId,0);
+		return new VerifyMove(playersInfo,emptyState,lastState, lastMove, lastMovePlayerId, playerIdToNumberOfTokensInPot);
 	}
 	
 	// helper function to assert the move is legal
@@ -82,7 +86,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = verticalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("6D","0")); lastMove.add(new Set("7D","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("6D","0")); lastMove.add(new Set("7D","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertLegalMove(move(bId,state,lastMove));
 	}
@@ -93,7 +97,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = verticalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("6D","0")); lastMove.add(new Set("2D","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("6D","0")); lastMove.add(new Set("2D","B")); lastMove.add(new SetTurn(wId));  
 		
 		assertIllegalMove(move(bId,state,lastMove));	
 	}
@@ -104,7 +108,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = verticalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("6D","B")); lastMove.add(new Set("2D","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("6D","B")); lastMove.add(new Set("2D","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));	
 	}
@@ -114,7 +118,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = verticalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("6D","0")); lastMove.add(new Set("8D","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("6D","0")); lastMove.add(new Set("8D","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertLegalMove(move(bId,state,lastMove));
 		
@@ -126,7 +130,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = verticalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("6D","0")); lastMove.add(new Set("3D","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("6D","0")); lastMove.add(new Set("3D","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -136,7 +140,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = verticalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("6D","0")); lastMove.add(new Set("7A","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("6D","0")); lastMove.add(new Set("7A","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -173,7 +177,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = horizontalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("4E","0")); lastMove.add(new Set("4G","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("4E","0")); lastMove.add(new Set("4G","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertLegalMove(move(bId,state,lastMove));
 	}
@@ -183,7 +187,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = horizontalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("4E","0")); lastMove.add(new Set("4H","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("4E","0")); lastMove.add(new Set("4H","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -193,7 +197,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = horizontalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("4E","0")); lastMove.add(new Set("4C","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("4E","0")); lastMove.add(new Set("4C","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -203,7 +207,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = horizontalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("4E","0")); lastMove.add(new Set("7A","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("4E","0")); lastMove.add(new Set("7A","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -240,7 +244,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","0")); lastMove.add(new Set("4C","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("3D","0")); lastMove.add(new Set("4C","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertLegalMove(move(bId,state,lastMove));
 	}
@@ -250,7 +254,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","B")); lastMove.add(new Set("4C","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("3D","B")); lastMove.add(new Set("4C","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -260,7 +264,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","0")); lastMove.add(new Set("4C","B")); lastMove.add(new Set("turn","B")); 
+		lastMove.add(new Set("3D","0")); lastMove.add(new Set("4C","B")); lastMove.add(new SetTurn(bId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -270,7 +274,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","0")); lastMove.add(new Set("6A","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("3D","0")); lastMove.add(new Set("6A","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertLegalMove(move(bId,state,lastMove));
 	}
@@ -280,7 +284,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","0")); lastMove.add(new Set("1F","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("3D","0")); lastMove.add(new Set("1F","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -290,7 +294,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","0")); lastMove.add(new Set("5B","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("3D","0")); lastMove.add(new Set("5B","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -300,7 +304,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","0")); lastMove.add(new Set("2E","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("3D","0")); lastMove.add(new Set("2E","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertLegalMove(move(bId,state,lastMove));
 	}
@@ -310,7 +314,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","0")); lastMove.add(new Set("3D","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("3D","0")); lastMove.add(new Set("3D","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -321,7 +325,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("3D","W")); lastMove.add(new Set("4C","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("3D","W")); lastMove.add(new Set("4C","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -331,7 +335,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("5B","0")); lastMove.add(new Set("6C","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("5B","0")); lastMove.add(new Set("6C","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertLegalMove(move(bId,state,lastMove));
 	}
@@ -342,7 +346,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("4C","0")); lastMove.add(new Set("6A","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("4C","0")); lastMove.add(new Set("6A","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -353,7 +357,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = diagonalMoveState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("2E","0")); lastMove.add(new Set("4C","B")); lastMove.add(new Set("turn","W")); 
+		lastMove.add(new Set("2E","0")); lastMove.add(new Set("4C","B")); lastMove.add(new SetTurn(wId)); 
 		
 		assertIllegalMove(move(bId,state,lastMove));
 	}
@@ -390,7 +394,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = beforeEndGameState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("7E","0")); lastMove.add(new Set("7G","B")); lastMove.add(new Set("turn","W"));
+		lastMove.add(new Set("7E","0")); lastMove.add(new Set("7G","B")); lastMove.add(new SetTurn(wId));
 		lastMove.add(new EndGame(bId));
 		
 		assertLegalMove(move(bId,state,lastMove));
@@ -401,7 +405,7 @@ public class CheatLogicTest {
 		Map<String, Object> state = beforeEndGameState();
 		
 		ArrayList<Operation> lastMove = new ArrayList<Operation>();
-		lastMove.add(new Set("7E","0")); lastMove.add(new Set("7D","B")); lastMove.add(new Set("turn","W"));
+		lastMove.add(new Set("7E","0")); lastMove.add(new Set("7D","B")); lastMove.add(new SetTurn(wId));
 		lastMove.add(new EndGame(bId));
 		
 		assertIllegalMove(move(bId,state,lastMove));
