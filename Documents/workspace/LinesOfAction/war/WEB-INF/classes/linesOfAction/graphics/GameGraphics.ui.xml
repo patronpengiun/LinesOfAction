@@ -1,7 +1,0 @@
-<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-  xmlns:g="urn:import:com.google.gwt.user.client.ui">
-  <g:VerticalPanel>
- 	<g:Grid height="336px" ui:field="gameGrid"/>
-  </g:VerticalPanel>
-</ui:UiBinder> 
