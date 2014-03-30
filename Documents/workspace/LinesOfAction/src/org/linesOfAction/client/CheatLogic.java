@@ -58,7 +58,7 @@ public class CheatLogic {
 			if (!checkDestinationColor(lastState,lastMove)) {System.out.println(7);break;}  // check whether destination is set to the right color
 			if (!checkOriginEmpty(lastMove)) {System.out.println(8);break;}					// check whether origin is empty after move
 			if (!checkSetTurn(lastState,lastMove, playersInfo)) {System.out.println(9);break;}			// check whether turn is correctly set after move
-			if ((lastMove.size()==4) && (!checkEndGame(lastState,lastMove,lastMovePlayerId,playersInfo))) {System.out.println(10);break;}
+			if ((lastMove.size()==5) && (!checkEndGame(lastState,lastMove,lastMovePlayerId,playersInfo))) {System.out.println(10);break;}
 			//check end game scenario
 			return;
 		}
@@ -84,9 +84,9 @@ public class CheatLogic {
 	boolean checkSetTurn(Map<String, Object> lastState, List<Operation> lastMove, List<Map<String, Object>> playersInfo){
 		SetTurn setTurn;
 		if (lastMove.size()>10)
-			setTurn = (SetTurn)lastMove.get(64);
+			setTurn = (SetTurn)lastMove.get(65);
 		else
-			setTurn = (SetTurn)lastMove.get(2); 
+			setTurn = (SetTurn)lastMove.get(3); 
 		Object wId = playersInfo.get(0).get("playerId");
 		String w_id = (String)wId;
 		String turn = setTurn.getPlayerId().equals(w_id) ? "W" : "B";
@@ -251,9 +251,9 @@ public class CheatLogic {
 	boolean checkEndGame(Map<String, Object> lastState, List<Operation> lastMove,String lastMovePlayerId, List<Map<String, Object>> playersInfo){
 		EndGame endGame;
 		if (lastMove.size()>10)
-			endGame= (EndGame)lastMove.get(65);
+			endGame= (EndGame)lastMove.get(66);
 		else
-			endGame= (EndGame)lastMove.get(3);
+			endGame= (EndGame)lastMove.get(4);
 		Object WID = playersInfo.get(0).get("playerId");
 		Object BID = playersInfo.get(1).get("playerId");
 		String w_id = (String)WID;

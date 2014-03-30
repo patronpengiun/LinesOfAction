@@ -43,6 +43,7 @@ public class GamePresenter {
 	private String opponentPlayerId;
 	private String turnId;
 	private String yourColor;
+	private String opponentColor;
 	
 	
 	private String origin;
@@ -71,6 +72,8 @@ public class GamePresenter {
 		int opponentPlayerIndex = 1 - yourPlayerIndex;
 		yourColor = yourPlayerIndex == 0 ? "W"
 		        : yourPlayerIndex == 1 ? "B" : "";
+		opponentColor = yourColor.equals("W") ? "B"
+				: yourColor.equals("B") ? "W" : "";
 		
 		if (newState.size() == 0) 
 			initialFlag = true;
@@ -129,8 +132,8 @@ public class GamePresenter {
 			
 			view.setState(moveFrom,moveTo,color);
 			
-			if (lastMove.size() == 4){
-				if (((EndGame)lastMove.get(3)).getPlayerIdToScore().get(yourPlayerId) != null)
+			if (lastMove.size() == 5){
+				if (((EndGame)lastMove.get(4)).getPlayerIdToScore().get(yourPlayerId) != null)
 					view.declareWinner(true);
 				else 
 					view.declareWinner(false);
@@ -174,6 +177,7 @@ public class GamePresenter {
 		List<Operation> theMove = new ArrayList<Operation>();
 		theMove.add(new Set(origin,"0"));
 		theMove.add(new Set(destination,yourColor));
+		theMove.add(new Set("turn",opponentColor));
 		theMove.add(new SetTurn(opponentPlayerId));
 		theMove.add(new EndGame(winnerId));
 		container.sendMakeMove(theMove);
@@ -201,6 +205,7 @@ public class GamePresenter {
 					theMove.add(new Set(String.valueOf(i+1)+Character.toString((char)('A'+j)),initialBoard[i][j]));
 				}
 		}
+		theMove.add(new Set("turn",opponentColor));
 		theMove.add(new SetTurn(opponentPlayerId));
 		container.sendMakeMove(theMove);
 	}

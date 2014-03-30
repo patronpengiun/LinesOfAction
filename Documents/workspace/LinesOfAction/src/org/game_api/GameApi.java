@@ -140,17 +140,18 @@ public final class GameApi {
 	      lastMove = ImmutableList.copyOf(operations);
 	      lastState = ImmutableMap.copyOf(state);
 	      if (operations.size() > 10){
-	    	  for (int i=0;i<64;i++){
+	    	  for (int i=0;i<65;i++){
 	    		  state.put(((Set)operations.get(i)).getKey(),((Set)operations.get(i)).getValue());
 	    	  }
-	    	  turnId = ((SetTurn)operations.get(64)).getPlayerId();
+	    	  //turnId = ((SetTurn)operations.get(64)).getPlayerId();
 	      }
 	      else{
 	    	  state.put(((Set)operations.get(0)).getKey(),"0");
 	    	  state.put(((Set)operations.get(1)).getKey(),((Set)operations.get(1)).getValue());
-	    	  turnId = ((SetTurn)operations.get(2)).getPlayerId();
+	    	  state.put(((Set)operations.get(2)).getKey(),((Set)operations.get(2)).getValue());
+	    	  //turnId = ((SetTurn)operations.get(2)).getPlayerId();
 	      }
-	      state.put("turn",Integer.parseInt(turnId)==42 ? "W" : "B");
+	      //state.put("turn",Integer.parseInt(turnId)==42 ? "W" : "B");
 
 	      // Verify the move on all players (actually one time is enough, because the game state for all the players are the same)
 	      for (String playerId : playerIds) {
