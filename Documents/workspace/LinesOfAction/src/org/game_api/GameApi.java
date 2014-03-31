@@ -140,7 +140,7 @@ public final class GameApi {
 	      lastMove = ImmutableList.copyOf(operations);
 	      lastState = ImmutableMap.copyOf(state);
 	      if (operations.size() > 10){
-	    	  for (int i=0;i<65;i++){
+	    	  for (int i=0;i<66;i++){
 	    		  state.put(((Set)operations.get(i)).getKey(),((Set)operations.get(i)).getValue());
 	    	  }
 	    	  //turnId = ((SetTurn)operations.get(64)).getPlayerId();
@@ -149,6 +149,7 @@ public final class GameApi {
 	    	  state.put(((Set)operations.get(0)).getKey(),"0");
 	    	  state.put(((Set)operations.get(1)).getKey(),((Set)operations.get(1)).getValue());
 	    	  state.put(((Set)operations.get(2)).getKey(),((Set)operations.get(2)).getValue());
+	    	  state.put(((Set)operations.get(3)).getKey(),((Set)operations.get(3)).getValue());
 	    	  //turnId = ((SetTurn)operations.get(2)).getPlayerId();
 	      }
 	      //state.put("turn",Integer.parseInt(turnId)==42 ? "W" : "B");

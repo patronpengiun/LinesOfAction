@@ -19,7 +19,7 @@ public class GamePresenter {
 		void setPresenter(GamePresenter gamepresenter);
 		
 		// present the animation of last move to the player 
-		void setState(String moveFrom, String moveTo, int color);
+		void setState(int[][] state, int[][] lastState, String from, String to, int color, boolean isDrag);
 		
 		// present the initial state of the board to the player, and set the player's color
 		void setInitialState(String color);
@@ -39,6 +39,7 @@ public class GamePresenter {
 	private final Container container;
 	
 	private int[][] board = new int[8][8];
+	private int[][] lastBoard = new int[8][8];
 	private String yourPlayerId;
 	private String opponentPlayerId;
 	private String turnId;
@@ -63,6 +64,7 @@ public class GamePresenter {
 		destination = "";
 		
 		Map<String,Object> newState = updateUI.getState();
+		Map<String,Object> lastState = updateUI.getLastState();
 		List<Operation> lastMove = updateUI.getLastMove();
 		yourPlayerId = updateUI.getYourPlayerId();
 		String lastMovePlayerId = updateUI.getLastMovePlayerId();
@@ -113,15 +115,38 @@ public class GamePresenter {
 								break;
 					}
 					//System.out.print(board[i][j]);
+					if (lastState.size()!=0){
+						switch ((String)lastState.get(Character.toString((char)('1'+i)) + Character.toString((char)('A'+j)))) {
+						case "O":	lastBoard[i][j] = 0;
+									break;
+						case "B":	lastBoard[i][j] = 1;
+									break;
+						case "W":	lastBoard[i][j] = 2;
+									break;
+						default:	lastBoard[i][j] = -1;
+									break;
+						}
+					}
 				}
 				//System.out.println("");
 			}
-			
+			if (lastState.size() == 0)
+				lastBoard = new int[][]{
+					  { 0, 1, 1, 1, 1, 1, 1, 0 },
+		    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
+		    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
+		    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
+		    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
+		    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
+		    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
+		    		  { 0, 1, 1, 1, 1, 1, 1, 0 }	
+				};
 			String moveFrom = ((Set)updateUI.getLastMove().get(0)).getKey();
 			String moveTo = ((Set)updateUI.getLastMove().get(1)).getKey();
+			boolean wasDrag = newState.get("isDrag").equals("true") ? true : false;
 	
 			if (updateUI.isViewer()) {
-			      view.setState(moveFrom,moveTo,color);
+			      view.setState(board,lastBoard,moveFrom,moveTo,color,wasDrag);
 			      return;
 			    }
 			if (updateUI.isAiPlayer()) {
@@ -130,10 +155,10 @@ public class GamePresenter {
 				return;
 			}
 			
-			view.setState(moveFrom,moveTo,color);
+			view.setState(board,lastBoard,moveFrom,moveTo,color,wasDrag);
 			
-			if (lastMove.size() == 5){
-				if (((EndGame)lastMove.get(4)).getPlayerIdToScore().get(yourPlayerId) != null)
+			if (lastMove.size() == 6){
+				if (((EndGame)lastMove.get(5)).getPlayerIdToScore().get(yourPlayerId) != null)
 					view.declareWinner(true);
 				else 
 					view.declareWinner(false);
@@ -155,10 +180,10 @@ public class GamePresenter {
 	}
 	
 	// The view can only call this method if the presenter called {@link View#choosePosition}
-	public void positionSelected(String position){
+	public void positionSelected(String position, boolean isDrag){
 		check(isMyTurn());
 		int color;
-		if (yourColor.equals("W")) color=1; else color=2;
+		if (yourColor.equals("W")) color=2; else color=1;
 		if ("".equals(origin)) {origin = position;choosePosition(2,0);} // origin selected, continue;
 		else{
 			if (position.equals(origin)) {origin="";choosePosition(1,color);} // origin canceled, continue;
@@ -167,23 +192,27 @@ public class GamePresenter {
 				String winnerId = checkWin(board,origin,destination);
 				//System.out.print("winneris: ");
 				//System.out.println(winnerId);
-				if (Integer.parseInt(winnerId)>=0) makeMoveWin(winnerId); // move made and someone wins the game
-				else makeMoveContinue(); // move made and the game continue
+				if (Integer.parseInt(winnerId)>=0) makeMoveWin(winnerId,isDrag); // move made and someone wins the game
+				else makeMoveContinue(isDrag); // move made and the game continue
 			}
 		}
 	}
 	
-	private void makeMoveWin(String winnerId){
+	private void makeMoveWin(String winnerId, boolean isDrag){
 		List<Operation> theMove = new ArrayList<Operation>();
 		theMove.add(new Set(origin,"0"));
 		theMove.add(new Set(destination,yourColor));
 		theMove.add(new Set("turn",opponentColor));
+		if (isDrag)
+			theMove.add(new Set("isDrag","true"));
+		else 
+			theMove.add(new Set("isDrag","false"));
 		theMove.add(new SetTurn(opponentPlayerId));
 		theMove.add(new EndGame(winnerId));
 		container.sendMakeMove(theMove);
 	}
 	
-	private void makeMoveContinue(){
+	private void makeMoveContinue(boolean isDrag){
 		List<Operation> theMove = new ArrayList<Operation>();
 		theMove.add(new Set(origin,"0"));
 		theMove.add(new Set(destination,yourColor));
@@ -206,6 +235,10 @@ public class GamePresenter {
 				}
 		}
 		theMove.add(new Set("turn",opponentColor));
+		if (isDrag)
+			theMove.add(new Set("isDrag","true"));
+		else 
+			theMove.add(new Set("isDrag","false"));
 		theMove.add(new SetTurn(opponentPlayerId));
 		container.sendMakeMove(theMove);
 	}
@@ -293,6 +326,7 @@ public class GamePresenter {
 		ArrayList<String> list = new ArrayList<String>();
 		
 		// self
+		list.add(position);
 		
 		// horizental
 		int hori_count=0;
