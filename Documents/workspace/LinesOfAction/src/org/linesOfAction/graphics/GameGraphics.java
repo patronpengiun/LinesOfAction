@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.AudioElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -49,11 +50,22 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	private final PieceImageSupplier pieceImageSupplier;
 	private GamePresenter presenter;
 	private AbsolutePanel imageContainer[][];
+	private Audio pieceDown;
 
 	
 	public GameGraphics() {
 		enableClick = false;
 		enableDrop = false;
+		GameSounds gameSounds = GWT.create(GameSounds.class);
+		if (Audio.isSupported()) {
+            pieceDown = Audio.createIfSupported();
+            pieceDown.addSource(gameSounds.pieceDownMp3().getSafeUri()
+                            .asString(), AudioElement.TYPE_MP3);
+            pieceDown.addSource(gameSounds.pieceDownWav().getSafeUri()
+                            .asString(), AudioElement.TYPE_WAV);
+            pieceDown.setControls(false);
+            RootPanel.get().add(pieceDown);
+		}
 		//System.out.println("set false! constructor");
 	    PieceImages pieceImages = GWT.create(PieceImages.class);
 	    this.pieceImageSupplier = new PieceImageSupplier(pieceImages);
@@ -363,9 +375,13 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	    		}
 	    	}
 		if (!isDrag){
-			PieceMovingAnimation animation = new PieceMovingAnimation(from,to,color);
+			PieceMovingAnimation animation = new PieceMovingAnimation(from,to,color,pieceDown);
 			animation.run(1000);
 		}
+		else if (pieceDown != null){
+			pieceDown.load();
+            pieceDown.play();
+        }
 	}
 	
 	@Override
@@ -412,7 +428,8 @@ public class GameGraphics extends Composite implements GamePresenter.View{
         int endX, endY, color;
         int moveFromX,moveFromY,moveToX,moveToY;
         String moveFrom,moveTo;
-        public PieceMovingAnimation(String from, String to, int clr) {
+        Audio sound;
+        public PieceMovingAnimation(String from, String to, int clr, Audio sd) {
         		moveFromX = from.charAt(0) - '1';
     			moveFromY = from.charAt(1) - 'A';
     			moveToX = to.charAt(0) - '1';
@@ -420,6 +437,7 @@ public class GameGraphics extends Composite implements GamePresenter.View{
     			moveFrom = from;
     			moveTo = to;
     			color = clr;
+    			sound = sd;
     		
                 start = (Image)imageContainer[moveFromX][moveFromY].getWidget(0);
                 end = (Image)imageContainer[moveToX][moveToY].getWidget(0);
@@ -548,6 +566,10 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 			}, DropEvent.getType());
         	imageContainer[moveToX][moveToY].clear();
         	imageContainer[moveToX][moveToY].add(pieceImg);
+        	if (sound != null){
+        		sound.load();
+        		sound.play();
+        	}
         }
 	}
 

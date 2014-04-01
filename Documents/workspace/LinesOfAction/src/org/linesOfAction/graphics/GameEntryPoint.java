@@ -38,7 +38,7 @@ public class GameEntryPoint implements EntryPoint {
 	    container = new ContainerConnector(game);
 	    GameGraphics gameGraphics = new GameGraphics();
 	    gamePresenter = new GamePresenter(gameGraphics, container);
-	   /* final ListBox playerSelect = new ListBox();
+	    /*final ListBox playerSelect = new ListBox();
 	    playerSelect.addItem("WhitePlayer");
 	    playerSelect.addItem("BlackPlayer");
 	    playerSelect.addItem("Viewer");
