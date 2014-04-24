@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="/Users/patronpenguin/Downloads/guava-16.0.1.jar"/>
 	<classpathentry kind="lib" path="/Users/patronpenguin/Downloads/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="lib" path="/Users/patronpenguin/Downloads/guava-gwt-16.0.1.jar"/>
+	<classpathentry kind="lib" path="/Users/patronpenguin/Downloads/gwt-dnd-3.3.0.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

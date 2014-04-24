@@ -11,6 +11,10 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.AudioElement;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragOverEvent;
@@ -43,19 +47,25 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	
 	@UiField
 	Grid gameGrid;
+	
+	@UiField
+	AbsolutePanel boardPanel;
 
 	private boolean enableClick;
-	private boolean enableDrop;
+	public boolean dragValid;
 	private ArrayList<String> possibleClickPositions;
 	private final PieceImageSupplier pieceImageSupplier;
 	private GamePresenter presenter;
-	private AbsolutePanel imageContainer[][];
+	public AbsolutePanel imageContainer[][];
 	private Audio pieceDown;
+	private GameDragController dragController;
+	private GameDropController dropController;
 
 	
 	public GameGraphics() {
 		enableClick = false;
-		enableDrop = false;
+		dragValid = false;
+		
 		GameSounds gameSounds = GWT.create(GameSounds.class);
 		if (Audio.isSupported()) {
             pieceDown = Audio.createIfSupported();
@@ -66,11 +76,12 @@ public class GameGraphics extends Composite implements GamePresenter.View{
             pieceDown.setControls(false);
             RootPanel.get().add(pieceDown);
 		}
-		//System.out.println("set false! constructor");
+
 	    PieceImages pieceImages = GWT.create(PieceImages.class);
 	    this.pieceImageSupplier = new PieceImageSupplier(pieceImages);
 	    GameGraphicsUiBinder uiBinder = GWT.create(GameGraphicsUiBinder.class);
 	    initWidget(uiBinder.createAndBindUi(this));
+	    
 	    imageContainer = new AbsolutePanel[8][8];
 	    initializeGrid();
 	    
@@ -81,76 +92,7 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	    		gameGrid.setWidget(i, j, imageContainer[i][j]);
 	    	}
 	    
-	    int[][] initialBoard = new int[][]{
-	    		  { 0, 1, 1, 1, 1, 1, 1, 0 },
-	    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
-	    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
-	    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
-	    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
-	    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
-	    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
-	    		  { 0, 1, 1, 1, 1, 1, 1, 0 }
-	    		};
-	    for (int i=0;i<8;i++)
-	    	for (int j=0;j<8;j++) {
-	    		final int row = i;
-	    		final int col = j;
-	    		StringBuilder str = new StringBuilder(Character.toString((char)('1'+i)));
-	    		str.append((char)('A'+j));
-	    		final String position = str.toString();
-	    		Image image = getImage(initialBoard[i][j]);
-	    		image.addClickHandler(new ClickHandler() {
-	    			@Override
-			          public void onClick(ClickEvent event) {
-    					
-	    				if (enableClick && clickCheck(row,col)) {
-	    					enableClick = false; // cannot click another position until choosePosition is called
-	    					//System.out.println("set false! click");
-	    					presenter.positionSelected(position,false);
-			            }
-			          }
-				});	
-	    		image.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-	    		image.addDragStartHandler(new DragStartHandler() {
-				    @Override
-				    public void onDragStart(DragStartEvent event) {
-				    	enableDrop = false;
-				        event.setData("from", position);
-				        event.getDataTransfer().setDragImage(((Image)imageContainer[row][col].getWidget(0)).getElement(), 10, 10);
-				        if (enableClick && clickCheck(row,col)){
-				        	enableClick = false;
-				        	enableDrop = true;
-				        	presenter.positionSelected(position,true);
-				        }
-				    }
-				});
-	    		image.addDomHandler(new DragOverHandler() {
-				    @Override
-				    public void onDragOver(DragOverEvent event) {
-				    }
-				}, DragOverEvent.getType());
-	    		image.addDomHandler(new DropHandler() {
-				    @Override
-				    public void onDrop(DropEvent event) {
-				    	event.preventDefault();
-				    	String fromPos = event.getData("from");
-				    	if (enableClick && enableDrop){
-				    		if (clickCheck(row,col)){
-				    			enableClick = false;
-					        	presenter.positionSelected(position,true);
-				    		}
-				    		else{
-				    			enableClick = false;
-				    			presenter.positionSelected(fromPos,true);
-				    		}
-				        }
-				    }
-				}, DropEvent.getType());
-	    		
-	    	
-	    		imageContainer[i][j].setPixelSize(42, 42);
-	    		imageContainer[i][j].add(image);
-	    	}
+	    initializeBoard(false);
 	}
 	
 	private void initializeGrid(){
@@ -164,12 +106,26 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	@Override
 	public void setPresenter(GamePresenter gamePresenter) {
 		this.presenter = gamePresenter;
+		
+		dragController = new GameDragController(RootPanel.get(), false, presenter, this);
+		dragController.setBehaviorConstrainedToBoundaryPanel(true);
+		dragController.setBehaviorMultipleSelection(false);
+		dragController.setBehaviorDragStartSensitivity(1);
+		
+		for (int i=0;i<8;i++)
+	    	for (int j=0;j<8;j++){
+	    		dropController = new GameDropController(imageContainer[i][j],presenter,this,i,j);
+	    		dragController.registerDropController(dropController);
+	    	}
 	}
 	
 	@Override
 	public void setInitialState(String color) {
 		enableClick = false; //cannot click until choosePosition is called
-		//System.out.println("set false! set initial");
+		initializeBoard(true);
+	}
+	
+	private void initializeBoard(boolean flag){
 		int[][] initialBoard = new int[][]{
 	    		  { 0, 1, 1, 1, 1, 1, 1, 0 },
 	    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
@@ -191,54 +147,14 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	    		image.addClickHandler(new ClickHandler() {
 	    			@Override
 			          public void onClick(ClickEvent event) {
-  					//System.out.println(row);
-  					//System.out.println(col);
-  					
 	    				if (enableClick && clickCheck(row,col)) {
 	    					enableClick = false; // cannot click another position until choosePosition is called
-	    					//System.out.println("set false! click");
 	    					presenter.positionSelected(position,false);
 			            }
 			          }
 				});	
-	    		
-	    		image.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-	    		image.addDragStartHandler(new DragStartHandler() {
-				    @Override
-				    public void onDragStart(DragStartEvent event) {
-				    	enableDrop = false;
-				        event.setData("from", position);
-				        event.getDataTransfer().setDragImage(((Image)imageContainer[row][col].getWidget(0)).getElement(), 10, 10);
-				        if (enableClick && clickCheck(row,col)){
-				        	enableClick = false;
-				        	enableDrop = true;
-				        	presenter.positionSelected(position,true);
-				        }
-				    }
-				});
-	    		image.addDomHandler(new DragOverHandler() {
-				    @Override
-				    public void onDragOver(DragOverEvent event) {
-				    }
-				}, DragOverEvent.getType());
-	    		image.addDomHandler(new DropHandler() {
-				    @Override
-				    public void onDrop(DropEvent event) {
-				    	event.preventDefault();
-				    	String fromPos = event.getData("from");
-				    	if (enableClick && enableDrop){
-				    		if (clickCheck(row,col)){
-				    			enableClick = false;
-					        	presenter.positionSelected(position,true);
-				    		}
-				    		else{
-				    			enableClick = false;
-				    			presenter.positionSelected(fromPos,true);
-				    		}
-				        }
-				    }
-				}, DropEvent.getType());
-	    		
+	    		if (flag)
+	    			dragController.makeDraggable(image);
 	    		imageContainer[i][j].clear();
 	    		imageContainer[i][j].setPixelSize(42, 42);
 	    		imageContainer[i][j].add(image);
@@ -263,9 +179,6 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	    		image.addClickHandler(new ClickHandler() {
 	    			@Override
 			          public void onClick(ClickEvent event) {
-  					//System.out.println(row);
-  					//System.out.println(col);
-  					
 	    				if (enableClick && clickCheck(row,col)) {
 	    					enableClick = false; // cannot click another position until choosePosition is called
 	    					//System.out.println("set false! click");
@@ -273,42 +186,8 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 			            }
 			          }
 				});	
-	    		image.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-	    		image.addDragStartHandler(new DragStartHandler() {
-				    @Override
-				    public void onDragStart(DragStartEvent event) {
-				    	enableDrop = false;
-				        event.setData("from", position);
-				        event.getDataTransfer().setDragImage(((Image)imageContainer[row][col].getWidget(0)).getElement(), 10, 10);
-				        if (enableClick && clickCheck(row,col)){
-				        	enableClick = false;
-				        	enableDrop = true;
-				        	presenter.positionSelected(position,true);
-				        }
-				    }
-				});
-	    		image.addDomHandler(new DragOverHandler() {
-				    @Override
-				    public void onDragOver(DragOverEvent event) {
-				    }
-				}, DragOverEvent.getType());
-	    		image.addDomHandler(new DropHandler() {
-				    @Override
-				    public void onDrop(DropEvent event) {
-				    	event.preventDefault();
-				    	String fromPos = event.getData("from");
-				    	if (enableClick && enableDrop){
-				    		if (clickCheck(row,col)){
-				    			enableClick = false;
-					        	presenter.positionSelected(position,true);
-				    		}
-				    		else{
-				    			enableClick = false;
-				    			presenter.positionSelected(fromPos,true);
-				    		}
-				        }
-				    }
-				}, DropEvent.getType());
+	    		dragController.makeDraggable(image);
+	    		
 	    		if ((i != moveFromX || j != moveFromY) && (i != moveToX || j != moveToY)){
 		    		imageContainer[i][j].clear();
 		    		imageContainer[i][j].setPixelSize(42, 42);
@@ -324,47 +203,10 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 					          public void onClick(ClickEvent event) {
 			    				if (enableClick && clickCheck(row,col)) {
 			    					enableClick = false; // cannot click another position until choosePosition is called
-			    					//System.out.println("set false! click");
 			    					presenter.positionSelected(position,false);
 					            }
 					          }
 			    		});
-			    		oldImg.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-			    		oldImg.addDragStartHandler(new DragStartHandler() {
-						    @Override
-						    public void onDragStart(DragStartEvent event) {
-						    	enableDrop = false;
-						        event.setData("from", position);
-						        event.getDataTransfer().setDragImage(((Image)imageContainer[row][col].getWidget(0)).getElement(), 10, 10);
-						        if (enableClick && clickCheck(row,col)){
-						        	enableClick = false;
-						        	enableDrop = true;
-						        	presenter.positionSelected(position,true);
-						        }
-						    }
-						});	
-			    		oldImg.addDomHandler(new DragOverHandler() {
-						    @Override
-						    public void onDragOver(DragOverEvent event) {
-						    }
-						}, DragOverEvent.getType());
-			    		oldImg.addDomHandler(new DropHandler() {
-						    @Override
-						    public void onDrop(DropEvent event) {
-						    	event.preventDefault();
-						    	String fromPos = event.getData("from");
-						    	if (enableClick && enableDrop){
-						    		if (clickCheck(row,col)){
-						    			enableClick = false;
-							        	presenter.positionSelected(position,true);
-						    		}
-						    		else{
-						    			enableClick = false;
-						    			presenter.positionSelected(fromPos,true);
-						    		}
-						        }
-						    }
-						}, DropEvent.getType());
 			    		imageContainer[i][j].add(oldImg);
 	    			}
 	    			else{
@@ -382,6 +224,32 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 			pieceDown.load();
             pieceDown.play();
         }
+	}
+	
+	@Override
+	public void resetGraphics(int[][] board){
+		for (int i=0;i<8;i++)
+	    	for (int j=0;j<8;j++) {
+	    		final int row = i;
+	    		final int col = j;
+	    		StringBuilder str = new StringBuilder(Character.toString((char)('1'+i)));
+	    		str.append((char)('A'+j));
+	    		final String position = str.toString();
+	    		Image image = getImage(board[i][j]);
+	    		image.addClickHandler(new ClickHandler() {
+	    			@Override
+			          public void onClick(ClickEvent event) {
+	    				if (enableClick && clickCheck(row,col)) {
+	    					enableClick = false; // cannot click another position until choosePosition is called
+	    					presenter.positionSelected(position,false);
+			            }
+			          }
+				});	
+	    		dragController.makeDraggable(image);
+	    		imageContainer[i][j].clear();
+	    		imageContainer[i][j].setPixelSize(42, 42);
+	    		imageContainer[i][j].add(image);
+	    	}
 	}
 	
 	@Override
@@ -411,7 +279,7 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	}
 	
 	
-	private boolean clickCheck(int row,int col){
+	public boolean clickCheck(int row,int col){
 		StringBuilder str = new StringBuilder(Character.toString((char)('1'+row)));
         str.append((char)('A'+col));
         if (possibleClickPositions.contains(str.toString())) 
@@ -474,42 +342,7 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 		            }
 		          }
 			});	
-        	emptyImg.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-    		emptyImg.addDragStartHandler(new DragStartHandler() {
-			    @Override
-			    public void onDragStart(DragStartEvent event) {
-			    	enableDrop = false;
-			        event.setData("from", moveFrom);
-			        event.getDataTransfer().setDragImage(((Image)imageContainer[moveFromX][moveFromY].getWidget(0)).getElement(), 10, 10);
-			        if (enableClick && clickCheck(moveFromX,moveFromY)){
-			        	enableClick = false;
-			        	enableDrop = true;
-			        	presenter.positionSelected(moveFrom,true);
-			        }
-			    }
-			});
-    		emptyImg.addDomHandler(new DragOverHandler() {
-			    @Override
-			    public void onDragOver(DragOverEvent event) {
-			    }
-			}, DragOverEvent.getType());
-    		emptyImg.addDomHandler(new DropHandler() {
-			    @Override
-			    public void onDrop(DropEvent event) {
-			    	event.preventDefault();
-			    	String fromPos = event.getData("from");
-			    	if (enableClick && enableDrop){
-			    		if (clickCheck(moveFromX,moveFromY)){
-			    			enableClick = false;
-				        	presenter.positionSelected(moveFrom,true);
-			    		}
-			    		else{
-			    			enableClick = false;
-			    			presenter.positionSelected(fromPos,true);
-			    		}
-			        }
-			    }
-			}, DropEvent.getType());
+        	dragController.makeDraggable(emptyImg);
         	panel.add(emptyImg);
         	moving.getElement().setClassName("movingImg");
         }
@@ -528,42 +361,7 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 		            }
 		          }
 			});	
-        	pieceImg.getElement().setDraggable(Element.DRAGGABLE_TRUE);
-        	pieceImg.addDragStartHandler(new DragStartHandler() {
-			    @Override
-			    public void onDragStart(DragStartEvent event) {
-			    	enableDrop = false;
-			        event.setData("from", moveTo);
-			        event.getDataTransfer().setDragImage(((Image)imageContainer[moveToX][moveToY].getWidget(0)).getElement(), 10, 10);
-			        if (enableClick && clickCheck(moveToX,moveToY)){
-			        	enableClick = false;
-			        	enableDrop = true;
-			        	presenter.positionSelected(moveTo,true);
-			        }
-			    }
-			});
-        	pieceImg.addDomHandler(new DragOverHandler() {
-			    @Override
-			    public void onDragOver(DragOverEvent event) {
-			    }
-			}, DragOverEvent.getType());
-        	pieceImg.addDomHandler(new DropHandler() {
-			    @Override
-			    public void onDrop(DropEvent event) {
-			    	event.preventDefault();
-			    	String fromPos = event.getData("from");
-			    	if (enableClick && enableDrop){
-			    		if (clickCheck(moveToX,moveToY)){
-			    			enableClick = false;
-				        	presenter.positionSelected(moveTo,true);
-			    		}
-			    		else{
-			    			enableClick = false;
-			    			presenter.positionSelected(fromPos,true);
-			    		}
-			        }
-			    }
-			}, DropEvent.getType());
+        	dragController.makeDraggable(pieceImg);
         	imageContainer[moveToX][moveToY].clear();
         	imageContainer[moveToX][moveToY].add(pieceImg);
         	if (sound != null){

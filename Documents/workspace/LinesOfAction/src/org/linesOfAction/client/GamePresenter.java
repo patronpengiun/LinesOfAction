@@ -24,6 +24,9 @@ public class GamePresenter {
 		// present the initial state of the board to the player, and set the player's color
 		void setInitialState(String color);
 		
+		// reset the graphics when drag and drop in a wrong place
+		void resetGraphics(int[][] state);
+		
 		/** ask the player to select a position on the board
 		 *  if origin and destination are both empty, the position player selects will be an origin
 		 *  if origin is not empty, player can either cancel the origin(by selecting the same position) or
@@ -167,16 +170,26 @@ public class GamePresenter {
 		}
 		
 		if (isMyTurn()){ 
-			if (yourColor.equals("W")) choosePosition(1,2);
-			if (yourColor.equals("B")) choosePosition(1,1);
+			if (yourColor.equals("W")) view.choosePosition(origin,destination,getPossibleOrigins(2));
+			if (yourColor.equals("B")) view.choosePosition(origin,destination,getPossibleOrigins(1));
 		}
 	}
 	 
 	private void choosePosition(int flag, int color){
-		if (1 == flag) view.choosePosition(origin,destination,getPossibleOrigins(color));
+		if (1 == flag) {
+			view.resetGraphics(board);
+			view.choosePosition(origin,destination,getPossibleOrigins(color));
+		}
 		else{
 			view.choosePosition(origin,destination,getPossibleDestinations(origin));
 		}
+	}
+	
+	public void resetMove(){
+		origin = "";
+		destination = "";
+		view.resetGraphics(board);
+		view.choosePosition(origin, destination, getPossibleOrigins(yourColor.equals("W") ? 2 : 1));
 	}
 	
 	// The view can only call this method if the presenter called {@link View#choosePosition}
@@ -186,12 +199,13 @@ public class GamePresenter {
 		if (yourColor.equals("W")) color=2; else color=1;
 		if ("".equals(origin)) {origin = position;choosePosition(2,0);} // origin selected, continue;
 		else{
-			if (position.equals(origin)) {origin="";choosePosition(1,color);} // origin canceled, continue;
+			if (position.equals(origin)) {
+				origin="";
+				choosePosition(1,color);
+				} // origin canceled, reset graphics, continue;
 			else {
 				destination = position;
 				String winnerId = checkWin(board,origin,destination);
-				//System.out.print("winneris: ");
-				//System.out.println(winnerId);
 				if (Integer.parseInt(winnerId)>=0) makeMoveWin(winnerId,isDrag); // move made and someone wins the game
 				else makeMoveContinue(isDrag); // move made and the game continue
 			}
