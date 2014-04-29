@@ -57,25 +57,12 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	private final PieceImageSupplier pieceImageSupplier;
 	private GamePresenter presenter;
 	public AbsolutePanel imageContainer[][];
-	private Audio pieceDown;
-	private GameDragController dragController;
-	private GameDropController dropController;
-
 	
 	public GameGraphics() {
 		enableClick = false;
 		dragValid = false;
 		
 		GameSounds gameSounds = GWT.create(GameSounds.class);
-		if (Audio.isSupported()) {
-            pieceDown = Audio.createIfSupported();
-            pieceDown.addSource(gameSounds.pieceDownMp3().getSafeUri()
-                            .asString(), AudioElement.TYPE_MP3);
-            pieceDown.addSource(gameSounds.pieceDownWav().getSafeUri()
-                            .asString(), AudioElement.TYPE_WAV);
-            pieceDown.setControls(false);
-            RootPanel.get().add(pieceDown);
-		}
 
 	    PieceImages pieceImages = GWT.create(PieceImages.class);
 	    this.pieceImageSupplier = new PieceImageSupplier(pieceImages);
@@ -106,17 +93,6 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	@Override
 	public void setPresenter(GamePresenter gamePresenter) {
 		this.presenter = gamePresenter;
-		
-		dragController = new GameDragController(RootPanel.get(), false, presenter, this);
-		dragController.setBehaviorConstrainedToBoundaryPanel(true);
-		dragController.setBehaviorMultipleSelection(false);
-		dragController.setBehaviorDragStartSensitivity(1);
-		
-		for (int i=0;i<8;i++)
-	    	for (int j=0;j<8;j++){
-	    		dropController = new GameDropController(imageContainer[i][j],presenter,this,i,j);
-	    		dragController.registerDropController(dropController);
-	    	}
 	}
 	
 	@Override
@@ -153,8 +129,6 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 			            }
 			          }
 				});	
-	    		if (flag)
-	    			dragController.makeDraggable(image);
 	    		imageContainer[i][j].clear();
 	    		imageContainer[i][j].setPixelSize(42, 42);
 	    		imageContainer[i][j].add(image);
@@ -186,7 +160,6 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 			            }
 			          }
 				});	
-	    		dragController.makeDraggable(image);
 	    		
 	    		if ((i != moveFromX || j != moveFromY) && (i != moveToX || j != moveToY)){
 		    		imageContainer[i][j].clear();
@@ -217,12 +190,11 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	    		}
 	    	}
 		if (!isDrag){
-			PieceMovingAnimation animation = new PieceMovingAnimation(from,to,color,pieceDown);
+			PieceMovingAnimation animation = new PieceMovingAnimation(from,to,color);
 			animation.run(1000);
 		}
-		else if (pieceDown != null){
-			pieceDown.load();
-            pieceDown.play();
+		else {
+			playSound();
         }
 	}
 	
@@ -245,7 +217,6 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 			            }
 			          }
 				});	
-	    		dragController.makeDraggable(image);
 	    		imageContainer[i][j].clear();
 	    		imageContainer[i][j].setPixelSize(42, 42);
 	    		imageContainer[i][j].add(image);
@@ -296,8 +267,7 @@ public class GameGraphics extends Composite implements GamePresenter.View{
         int endX, endY, color;
         int moveFromX,moveFromY,moveToX,moveToY;
         String moveFrom,moveTo;
-        Audio sound;
-        public PieceMovingAnimation(String from, String to, int clr, Audio sd) {
+        public PieceMovingAnimation(String from, String to, int clr) {
         		moveFromX = from.charAt(0) - '1';
     			moveFromY = from.charAt(1) - 'A';
     			moveToX = to.charAt(0) - '1';
@@ -305,7 +275,6 @@ public class GameGraphics extends Composite implements GamePresenter.View{
     			moveFrom = from;
     			moveTo = to;
     			color = clr;
-    			sound = sd;
     		
                 start = (Image)imageContainer[moveFromX][moveFromY].getWidget(0);
                 end = (Image)imageContainer[moveToX][moveToY].getWidget(0);
@@ -322,8 +291,8 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 
         @Override
         protected void onUpdate(double progress) {
-                int x = (int) (startX + (endX - startX) * progress);
-                int y = (int) (startY + (endY - startY) * progress);
+                int x = (int) (startX + (endX - startX) * progress / Double.parseDouble(getScale()));
+                int y = (int) (startY + (endY - startY) * progress / Double.parseDouble(getScale()));
                 panel.setWidgetPosition(moving, x, y);
         }
         
@@ -342,7 +311,6 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 		            }
 		          }
 			});	
-        	dragController.makeDraggable(emptyImg);
         	panel.add(emptyImg);
         	moving.getElement().setClassName("movingImg");
         }
@@ -361,15 +329,20 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 		            }
 		          }
 			});	
-        	dragController.makeDraggable(pieceImg);
         	imageContainer[moveToX][moveToY].clear();
         	imageContainer[moveToX][moveToY].add(pieceImg);
-        	if (sound != null){
-        		sound.load();
-        		sound.play();
-        	}
+        	playSound();
         }
 	}
+	
+	private static native String getScale()/*-{
+		return $doc.getElementById('scale').value;
+	}-*/ ;
+	
+	private static native void playSound()/*-{
+		$doc.getElementsByTagName('audio')[0].load()
+		$doc.getElementsByTagName('audio')[0].play()
+	}-*/ ;
 
 
 }

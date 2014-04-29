@@ -10,8 +10,12 @@ import org.game_api.GameApi.UpdateUI;
 import org.game_api.GameApi.VerifyMove;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -20,6 +24,8 @@ public class GameEntryPoint implements EntryPoint {
 	  //IteratingPlayerContainer container;
 	  ContainerConnector container;
 	  GamePresenter gamePresenter;
+	  
+	  PlayerNameConstants playerNames = (PlayerNameConstants)GWT.create(PlayerNameConstants.class);
 	  
 	  @Override
 	  public void onModuleLoad() {
@@ -39,9 +45,9 @@ public class GameEntryPoint implements EntryPoint {
 	    GameGraphics gameGraphics = new GameGraphics();
 	    gamePresenter = new GamePresenter(gameGraphics, container);
 	    /*final ListBox playerSelect = new ListBox();
-	    playerSelect.addItem("WhitePlayer");
-	    playerSelect.addItem("BlackPlayer");
-	    playerSelect.addItem("Viewer");
+	    playerSelect.addItem(playerNames.whiteName());
+	    playerSelect.addItem(playerNames.blackName());
+	    playerSelect.addItem(playerNames.viewerName());
 	    playerSelect.addChangeHandler(new ChangeHandler() {
 	      @Override
 	      public void onChange(ChangeEvent event) {
@@ -53,9 +59,11 @@ public class GameEntryPoint implements EntryPoint {
 	    });*/
 	    FlowPanel flowPanel = new FlowPanel();
 	    flowPanel.add(gameGraphics);
+	    
+	    
 	    //flowPanel.add(playerSelect);
 	    RootPanel.get("mainDiv").add(flowPanel);
 	    container.sendGameReady();
 	    //container.updateUi(container.getPlayerIds().get(0));
-	  	}
+	  }
 	}

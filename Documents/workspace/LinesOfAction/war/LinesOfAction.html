@@ -2,9 +2,35 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="300px, initial-scale=0.8, user-scalable=2.0, minimum-scale=0.8, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Cheat game</title>
     <script type="text/javascript" language="javascript" src="linesofaction/linesofaction.nocache.js"></script>
+    <script>
+		function scaleBody() {
+		  var myGameWidth = 400;
+		  var myGameHeight = 550;
+		  var scaleX = window.innerWidth / myGameWidth;
+		  var scaleY = window.innerHeight / myGameHeight;
+		  var scale = Math.min(scaleX, scaleY);
+		  var transformString = "scale(" + scale + "," + scale + ")";
+		  document.body.style.transform = transformString;
+		  document.body.style['-o-transform'] = transformString;
+		  document.body.style['-webkit-transform'] = transformString;
+		  document.body.style['-moz-transform'] = transformString;
+		  document.body.style['-ms-transform'] = transformString;
+		  var transformOriginString = "0 0 0";
+		  document.body.style['transform-origin'] = transformOriginString;
+		  document.body.style['-o-transform-origin'] = transformOriginString;
+		  document.body.style['-webkit-transform-origin'] = transformOriginString;
+		  document.body.style['-moz-transform-origin'] = transformOriginString;
+		  document.body.style['-ms-transform-origin'] = transformOriginString;
+		  document.getElementById('scale').value = scale;
+		}
+		window.onresize = scaleBody;
+		window.onorientationchange = scaleBody;
+		document.addEventListener("orientationchange", scaleBody);
+		window.onload = scaleBody;
+	</script>
     <style>
   .imgContainer {
     overflow:hidden;
@@ -18,7 +44,7 @@
   }
   .movingImg{
 	z-index:100;
-}
+	}
 	.showMove{
 	overflow:visible !important;
 	}
@@ -31,8 +57,11 @@
   </head>
   <body>
     <div id="mainDiv" style="width:400;height:400;"></div>
-    <div><p>Sorry that the game is very primitive now. Here is how you can play it: Click on one of the piece to select a piece. Then click on another piece or an empty space to select the destination. 
-    		If the move is valid, the board will be updated. If you wish to cancel the selection of piece, just click again on the same piece you selected.</p></div>
-    <div><p>Added sound, drag&drop and animation</p></div>
+    <div><p style="width:360px">Internationalized, you can view English version by appending ?locale=en to the url, and view Chinese version by appending ?locale=zh to the url. <br /><br />As discussed in Google Group, removed drog & drop functionality because GWT-dnd has bug for auto-scaling</p></div>
+    <input id="scale" type="hidden"></input>
+    <audio id="sound">
+    	<source src="pieceDown.mp3" type="audio/mpeg">
+    	<source src="pieceDown.wav" type="audio/wav">
+    </audio>
   </body>
 </html>

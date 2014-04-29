@@ -1,5 +1,5 @@
 function linesofaction(){
-  var $intern_14 = '', $intern_11 = ' top: -1000px;', $intern_37 = '" for "gwt:onLoadErrorFn"', $intern_35 = '" for "gwt:onPropertyErrorFn"', $intern_20 = '");', $intern_38 = '#', $intern_65 = '.cache.js', $intern_40 = '/', $intern_46 = '//', $intern_59 = '0B05FD28C9A0CB0FEF51955AAE6E9045', $intern_60 = '3E8BDA25E034CDC3E97E11578BBF4716', $intern_61 = '42A2D61F1FF29CFA8B1A219A5F0B4CE4', $intern_62 = '4C8655D0E8188863E182A456ECC96E3D', $intern_64 = ':', $intern_29 = '::', $intern_77 = ':moduleBase', $intern_13 = '<!doctype html>', $intern_15 = '<html><head><\/head><body><\/body><\/html>', $intern_32 = '=', $intern_39 = '?', $intern_34 = 'Bad handler "', $intern_12 = 'CSS1Compat', $intern_18 = 'Chrome', $intern_63 = 'D79550623433C9163505DEEFE3386F6E', $intern_17 = 'DOMContentLoaded', $intern_6 = 'DUMMY', $intern_76 = 'Ignoring non-whitelisted Dev Mode URL: ', $intern_75 = '__gwtDevModeHook:linesofaction', $intern_45 = 'base', $intern_43 = 'baseUrl', $intern_1 = 'begin', $intern_7 = 'body', $intern_0 = 'bootstrap', $intern_42 = 'clear.cache.gif', $intern_31 = 'content', $intern_72 = 'end', $intern_19 = 'eval("', $intern_74 = 'file:', $intern_54 = 'gecko', $intern_55 = 'gecko1_8', $intern_2 = 'gwt.codesvr.linesofaction=', $intern_3 = 'gwt.codesvr=', $intern_71 = 'gwt/clean/clean.css', $intern_36 = 'gwt:onLoadErrorFn', $intern_33 = 'gwt:onPropertyErrorFn', $intern_30 = 'gwt:property', $intern_25 = 'head', $intern_69 = 'href', $intern_73 = 'http:', $intern_51 = 'ie10', $intern_53 = 'ie8', $intern_52 = 'ie9', $intern_8 = 'iframe', $intern_41 = 'img', $intern_22 = 'javascript', $intern_9 = 'javascript:""', $intern_4 = 'linesofaction', $intern_58 = 'linesofaction.devmode.js', $intern_44 = 'linesofaction.nocache.js', $intern_28 = 'linesofaction::', $intern_66 = 'link', $intern_70 = 'loadExternalRefs', $intern_26 = 'meta', $intern_24 = 'moduleRequested', $intern_23 = 'moduleStartup', $intern_50 = 'msie', $intern_27 = 'name', $intern_10 = 'position:absolute; width:0; height:0; border:none; left: -1000px;', $intern_67 = 'rel', $intern_49 = 'safari', $intern_21 = 'script', $intern_57 = 'selectingPermutation', $intern_5 = 'startup', $intern_68 = 'stylesheet', $intern_16 = 'undefined', $intern_56 = 'unknown', $intern_47 = 'user.agent', $intern_48 = 'webkit';
+  var $intern_14 = '', $intern_11 = ' top: -1000px;', $intern_37 = '" for "gwt:onLoadErrorFn"', $intern_35 = '" for "gwt:onPropertyErrorFn"', $intern_20 = '");', $intern_38 = '#', $intern_50 = '&', $intern_84 = '.cache.js', $intern_40 = '/', $intern_46 = '//', $intern_67 = '049E2BB639B36661C0B219A5AD2C6CAC', $intern_68 = '20377C1BF4DA0E7064FA34A4F3E3891A', $intern_69 = '258E05CC08F89C1F762EB2CF99559F92', $intern_71 = '49E2E27B239BD0D1E39D062FB2FA6872', $intern_72 = '539BAEDF1960D47D2A4E74941F6AEB80', $intern_73 = '553FFB89B367C6719D1DA62098EE8187', $intern_74 = '56616C90D3791A1335C625AAC1D5CB16', $intern_75 = '599128B9DC4D2F31155817CB37132B67', $intern_76 = '5DF3616CBC0368574F65ABD4E12B0E07', $intern_77 = '6C1D074C39D872FC9939C4E0043D9F45', $intern_78 = '71D8F6EE93C370B3633A2A3C52614BD0', $intern_83 = ':', $intern_29 = '::', $intern_96 = ':moduleBase', $intern_13 = '<!doctype html>', $intern_15 = '<html><head><\/head><body><\/body><\/html>', $intern_32 = '=', $intern_39 = '?', $intern_79 = 'A21919963612B65170F2C10D42F712B9', $intern_34 = 'Bad handler "', $intern_80 = 'C53BED5BB1ED310F6CCCA02567C0721E', $intern_81 = 'C7A8E3D4A8D24D9F5643C4AE4E88D2F0', $intern_12 = 'CSS1Compat', $intern_18 = 'Chrome', $intern_17 = 'DOMContentLoaded', $intern_6 = 'DUMMY', $intern_82 = 'E9F277F661C51C7192B02F7E8C516B3B', $intern_95 = 'Ignoring non-whitelisted Dev Mode URL: ', $intern_53 = 'Unexpected exception in locale detection, using default: ', $intern_52 = '_', $intern_94 = '__gwtDevModeHook:linesofaction', $intern_51 = '__gwt_Locale', $intern_45 = 'base', $intern_43 = 'baseUrl', $intern_1 = 'begin', $intern_7 = 'body', $intern_0 = 'bootstrap', $intern_42 = 'clear.cache.gif', $intern_31 = 'content', $intern_48 = 'default', $intern_70 = 'en', $intern_91 = 'end', $intern_19 = 'eval("', $intern_93 = 'file:', $intern_61 = 'gecko', $intern_62 = 'gecko1_8', $intern_2 = 'gwt.codesvr.linesofaction=', $intern_3 = 'gwt.codesvr=', $intern_90 = 'gwt/clean/clean.css', $intern_36 = 'gwt:onLoadErrorFn', $intern_33 = 'gwt:onPropertyErrorFn', $intern_30 = 'gwt:property', $intern_25 = 'head', $intern_88 = 'href', $intern_92 = 'http:', $intern_58 = 'ie10', $intern_60 = 'ie8', $intern_59 = 'ie9', $intern_8 = 'iframe', $intern_41 = 'img', $intern_22 = 'javascript', $intern_9 = 'javascript:""', $intern_4 = 'linesofaction', $intern_65 = 'linesofaction.devmode.js', $intern_44 = 'linesofaction.nocache.js', $intern_28 = 'linesofaction::', $intern_85 = 'link', $intern_89 = 'loadExternalRefs', $intern_47 = 'locale', $intern_49 = 'locale=', $intern_26 = 'meta', $intern_24 = 'moduleRequested', $intern_23 = 'moduleStartup', $intern_57 = 'msie', $intern_27 = 'name', $intern_10 = 'position:absolute; width:0; height:0; border:none; left: -1000px;', $intern_86 = 'rel', $intern_56 = 'safari', $intern_21 = 'script', $intern_64 = 'selectingPermutation', $intern_5 = 'startup', $intern_87 = 'stylesheet', $intern_16 = 'undefined', $intern_63 = 'unknown', $intern_54 = 'user.agent', $intern_55 = 'webkit', $intern_66 = 'zh';
   var $wnd = window;
   var $doc = document;
   sendStats($intern_0, $intern_1);
@@ -334,40 +334,82 @@ function linesofaction(){
     }
 
     providers[$intern_47] = function(){
+      var locale = null;
+      var rtlocale = $intern_48;
+      try {
+        if (!locale) {
+          var queryParam = location.search;
+          var qpStart = queryParam.indexOf($intern_49);
+          if (qpStart >= 0) {
+            var value_0 = queryParam.substring(qpStart + 7);
+            var end = queryParam.indexOf($intern_50, qpStart);
+            if (end < 0) {
+              end = queryParam.length;
+            }
+            locale = queryParam.substring(qpStart + 7, end);
+          }
+        }
+        if (!locale) {
+          locale = __gwt_getMetaProperty($intern_47);
+        }
+        if (!locale) {
+          locale = $wnd[$intern_51];
+        }
+        if (locale) {
+          rtlocale = locale;
+        }
+        while (locale && !__gwt_isKnownPropertyValue($intern_47, locale)) {
+          var lastIndex = locale.lastIndexOf($intern_52);
+          if (lastIndex < 0) {
+            locale = null;
+            break;
+          }
+          locale = locale.substring(0, lastIndex);
+        }
+      }
+       catch (e) {
+        alert($intern_53 + e);
+      }
+      $wnd[$intern_51] = rtlocale;
+      return locale || $intern_48;
+    }
+    ;
+    values[$intern_47] = {'default':0, en:1, zh:2};
+    providers[$intern_54] = function(){
       var ua = navigator.userAgent.toLowerCase();
       var makeVersion = function(result){
         return parseInt(result[1]) * 1000 + parseInt(result[2]);
       }
       ;
       if (function(){
-        return ua.indexOf($intern_48) != -1;
+        return ua.indexOf($intern_55) != -1;
       }
       ())
-        return $intern_49;
+        return $intern_56;
       if (function(){
-        return ua.indexOf($intern_50) != -1 && $doc.documentMode >= 10;
+        return ua.indexOf($intern_57) != -1 && $doc.documentMode >= 10;
       }
       ())
-        return $intern_51;
+        return $intern_58;
       if (function(){
-        return ua.indexOf($intern_50) != -1 && $doc.documentMode >= 9;
+        return ua.indexOf($intern_57) != -1 && $doc.documentMode >= 9;
       }
       ())
-        return $intern_52;
+        return $intern_59;
       if (function(){
-        return ua.indexOf($intern_50) != -1 && $doc.documentMode >= 8;
+        return ua.indexOf($intern_57) != -1 && $doc.documentMode >= 8;
       }
       ())
-        return $intern_53;
+        return $intern_60;
       if (function(){
-        return ua.indexOf($intern_54) != -1;
+        return ua.indexOf($intern_61) != -1;
       }
       ())
-        return $intern_55;
-      return $intern_56;
+        return $intern_62;
+      return $intern_63;
     }
     ;
-    values[$intern_47] = {gecko1_8:0, ie10:1, ie8:2, ie9:3, safari:4};
+    values[$intern_54] = {gecko1_8:0, ie10:1, ie8:2, ie9:3, safari:4};
     __gwt_isKnownPropertyValue = function(propName, propValue){
       return propValue in values[propName];
     }
@@ -384,19 +426,29 @@ function linesofaction(){
     ;
     linesofaction.__computePropValue = computePropValue;
     $wnd.__gwt_activeModules[$intern_4].bindings = linesofaction.__getPropMap;
-    sendStats($intern_0, $intern_57);
+    sendStats($intern_0, $intern_64);
     if (isHostedMode()) {
-      return computeUrlForResource($intern_58);
+      return computeUrlForResource($intern_65);
     }
     var strongName;
     try {
-      unflattenKeylistIntoAnswers([$intern_52], $intern_59);
-      unflattenKeylistIntoAnswers([$intern_51], $intern_60);
-      unflattenKeylistIntoAnswers([$intern_53], $intern_61);
-      unflattenKeylistIntoAnswers([$intern_55], $intern_62);
-      unflattenKeylistIntoAnswers([$intern_49], $intern_63);
-      strongName = answers[computePropValue($intern_47)];
-      var idx = strongName.indexOf($intern_64);
+      unflattenKeylistIntoAnswers([$intern_66, $intern_60], $intern_67);
+      unflattenKeylistIntoAnswers([$intern_48, $intern_59], $intern_68);
+      unflattenKeylistIntoAnswers([$intern_48, $intern_60], $intern_69);
+      unflattenKeylistIntoAnswers([$intern_70, $intern_58], $intern_71);
+      unflattenKeylistIntoAnswers([$intern_48, $intern_56], $intern_72);
+      unflattenKeylistIntoAnswers([$intern_48, $intern_58], $intern_73);
+      unflattenKeylistIntoAnswers([$intern_70, $intern_62], $intern_74);
+      unflattenKeylistIntoAnswers([$intern_70, $intern_56], $intern_75);
+      unflattenKeylistIntoAnswers([$intern_66, $intern_56], $intern_76);
+      unflattenKeylistIntoAnswers([$intern_66, $intern_58], $intern_77);
+      unflattenKeylistIntoAnswers([$intern_66, $intern_62], $intern_78);
+      unflattenKeylistIntoAnswers([$intern_48, $intern_62], $intern_79);
+      unflattenKeylistIntoAnswers([$intern_70, $intern_59], $intern_80);
+      unflattenKeylistIntoAnswers([$intern_70, $intern_60], $intern_81);
+      unflattenKeylistIntoAnswers([$intern_66, $intern_59], $intern_82);
+      strongName = answers[computePropValue($intern_47)][computePropValue($intern_54)];
+      var idx = strongName.indexOf($intern_83);
       if (idx != -1) {
         softPermutationId = parseInt(strongName.substring(idx + 1), 10);
         strongName = strongName.substring(0, idx);
@@ -405,7 +457,7 @@ function linesofaction(){
      catch (e) {
     }
     linesofaction.__softPermutationId = softPermutationId;
-    return computeUrlForResource(strongName + $intern_65);
+    return computeUrlForResource(strongName + $intern_84);
   }
 
   function loadExternalStylesheets(){
@@ -414,17 +466,17 @@ function linesofaction(){
     }
     function installOneStylesheet(stylesheetUrl){
       if (!__gwt_stylesLoaded[stylesheetUrl]) {
-        var l = $doc.createElement($intern_66);
-        l.setAttribute($intern_67, $intern_68);
-        l.setAttribute($intern_69, computeUrlForResource(stylesheetUrl));
+        var l = $doc.createElement($intern_85);
+        l.setAttribute($intern_86, $intern_87);
+        l.setAttribute($intern_88, computeUrlForResource(stylesheetUrl));
         $doc.getElementsByTagName($intern_25)[0].appendChild(l);
         __gwt_stylesLoaded[stylesheetUrl] = true;
       }
     }
 
-    sendStats($intern_70, $intern_1);
-    installOneStylesheet($intern_71);
-    sendStats($intern_70, $intern_72);
+    sendStats($intern_89, $intern_1);
+    installOneStylesheet($intern_90);
+    sendStats($intern_89, $intern_91);
   }
 
   processMetas();
@@ -432,20 +484,20 @@ function linesofaction(){
   activeModules[$intern_4].moduleBase = linesofaction.__moduleBase;
   var filename = getCompiledCodeFilename();
   if ($wnd) {
-    var devModePermitted = !!($wnd.location.protocol == $intern_73 || $wnd.location.protocol == $intern_74);
+    var devModePermitted = !!($wnd.location.protocol == $intern_92 || $wnd.location.protocol == $intern_93);
     $wnd.__gwt_activeModules[$intern_4].canRedirect = devModePermitted;
     if (devModePermitted) {
-      var devModeKey = $intern_75;
+      var devModeKey = $intern_94;
       var devModeUrl = $wnd.sessionStorage[devModeKey];
       if (!/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/.*$/.test(devModeUrl)) {
         if (devModeUrl && (window.console && console.log)) {
-          console.log($intern_76 + devModeUrl);
+          console.log($intern_95 + devModeUrl);
         }
         devModeUrl = $intern_14;
       }
       if (devModeUrl && !$wnd[devModeKey]) {
         $wnd[devModeKey] = true;
-        $wnd[devModeKey + $intern_77] = computeScriptBase();
+        $wnd[devModeKey + $intern_96] = computeScriptBase();
         var devModeScript = $doc.createElement($intern_21);
         devModeScript.src = devModeUrl;
         var head = $doc.getElementsByTagName($intern_25)[0];
@@ -455,7 +507,7 @@ function linesofaction(){
     }
   }
   loadExternalStylesheets();
-  sendStats($intern_0, $intern_72);
+  sendStats($intern_0, $intern_91);
   installScript(filename);
   return true;
 }
