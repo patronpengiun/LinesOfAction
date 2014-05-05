@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+import com.google.gwt.user.client.Timer;
+
 public class GamePresenter {
 	
 	public interface View {
@@ -108,7 +110,7 @@ public class GamePresenter {
 			for (int i=0;i<8;i++) {
 				for (int j=0;j<8;j++){
 					switch ((String)newState.get(Character.toString((char)('1'+i)) + Character.toString((char)('A'+j)))) {
-					case "O":	board[i][j] = 0;
+					case "0":	board[i][j] = 0;
 								break;
 					case "B":	board[i][j] = 1;
 								break;
@@ -120,7 +122,7 @@ public class GamePresenter {
 					//System.out.print(board[i][j]);
 					if (lastState.size()!=0){
 						switch ((String)lastState.get(Character.toString((char)('1'+i)) + Character.toString((char)('A'+j)))) {
-						case "O":	lastBoard[i][j] = 0;
+						case "0":	lastBoard[i][j] = 0;
 									break;
 						case "B":	lastBoard[i][j] = 1;
 									break;
@@ -153,6 +155,22 @@ public class GamePresenter {
 			      return;
 			    }
 			if (updateUI.isAiPlayer()) {
+				if (!isMyTurn())
+					return;
+				
+				Heuristic gameHeuristic = new Heuristic();
+				AlphaBetaPruning pruning = new AlphaBetaPruning(gameHeuristic);
+				List<Operation> moves = pruning.findBestMove(newState,2,new Timer(){
+					public void run(){
+						System.out.println("timer start");
+					}
+				});
+				origin = ((Set)moves.get(0)).getKey();
+				destination = ((Set)moves.get(1)).getKey();
+				String winnerId = checkWin(board,origin,destination);
+				if (Integer.parseInt(winnerId)>=0) makeMoveWin(winnerId,false); 
+				else makeMoveContinue(false); 
+				
 				// TODO: implement AI in a later HW!
 				//container.sendMakeMove(..);
 				return;
