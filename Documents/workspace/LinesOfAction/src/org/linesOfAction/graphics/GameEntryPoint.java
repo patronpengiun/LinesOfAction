@@ -21,8 +21,8 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class GameEntryPoint implements EntryPoint {
-	  IteratingPlayerContainer container;
-	  //ContainerConnector container;
+	  //IteratingPlayerContainer container;
+	  ContainerConnector container;
 	  GamePresenter gamePresenter;
 	  
 	  PlayerNameConstants playerNames = (PlayerNameConstants)GWT.create(PlayerNameConstants.class);
@@ -40,11 +40,11 @@ public class GameEntryPoint implements EntryPoint {
 	        gamePresenter.updateUI(updateUI);
 	      }
 	    };
-	    container = new IteratingPlayerContainer(game, 2);
-	    //container = new ContainerConnector(game);
+	    //container = new IteratingPlayerContainer(game, 2);
+	    container = new ContainerConnector(game);
 	    GameGraphics gameGraphics = new GameGraphics();
 	    gamePresenter = new GamePresenter(gameGraphics, container);
-	    final ListBox playerSelect = new ListBox();
+	    /*final ListBox playerSelect = new ListBox();
 	    playerSelect.addItem(playerNames.whiteName());
 	    playerSelect.addItem(playerNames.blackName());
 	    playerSelect.addItem(playerNames.viewerName());
@@ -56,12 +56,12 @@ public class GameEntryPoint implements EntryPoint {
 	            : container.getPlayerIds().get(selectedIndex);
 	        container.updateUi(playerId);
 	      }
-	    });
+	    });*/
 	    FlowPanel flowPanel = new FlowPanel();
 	    flowPanel.add(gameGraphics);
-	    flowPanel.add(playerSelect);
+	    //flowPanel.add(playerSelect);
 	    RootPanel.get("mainDiv").add(flowPanel);
 	    container.sendGameReady();
-	    container.updateUi(container.getPlayerIds().get(0));
+	    //container.updateUi(container.getPlayerIds().get(0));
 	  }
 	}
