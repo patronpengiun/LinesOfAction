@@ -113,7 +113,7 @@ public final class GameApi {
 	      for (int i = 0; i < numberOfPlayers; i++) {
 	        String playerId;
 	        if (i==0) playerId = String.valueOf(42 + i);
-	        else playerId = "0";
+	        else playerId = "43";
 	        playerIds.add(playerId);
 	        playersInfo.add(ImmutableMap.<String, Object>of(PLAYER_ID, playerId));
 	      }

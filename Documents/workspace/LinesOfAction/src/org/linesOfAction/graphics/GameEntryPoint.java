@@ -25,7 +25,7 @@ public class GameEntryPoint implements EntryPoint {
 	  ContainerConnector container;
 	  GamePresenter gamePresenter;
 	  
-	  PlayerNameConstants playerNames = (PlayerNameConstants)GWT.create(PlayerNameConstants.class);
+	 GameConstants constants = (GameConstants)GWT.create(GameConstants.class);
 	  
 	  @Override
 	  public void onModuleLoad() {
@@ -45,9 +45,9 @@ public class GameEntryPoint implements EntryPoint {
 	    GameGraphics gameGraphics = new GameGraphics();
 	    gamePresenter = new GamePresenter(gameGraphics, container);
 	    /*final ListBox playerSelect = new ListBox();
-	    playerSelect.addItem(playerNames.whiteName());
-	    playerSelect.addItem(playerNames.blackName());
-	    playerSelect.addItem(playerNames.viewerName());
+	    playerSelect.addItem(constants.whiteName());
+	    playerSelect.addItem(constants.blackName());
+	    playerSelect.addItem(constants.viewerName());
 	    playerSelect.addChangeHandler(new ChangeHandler() {
 	      @Override
 	      public void onChange(ChangeEvent event) {
@@ -60,6 +60,7 @@ public class GameEntryPoint implements EntryPoint {
 	    FlowPanel flowPanel = new FlowPanel();
 	    flowPanel.add(gameGraphics);
 	    //flowPanel.add(playerSelect);
+	    RootPanel.get("title").getElement().setInnerText(constants.title());
 	    RootPanel.get("mainDiv").add(flowPanel);
 	    container.sendGameReady();
 	    //container.updateUi(container.getPlayerIds().get(0));

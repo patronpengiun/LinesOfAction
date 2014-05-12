@@ -31,7 +31,7 @@ public class CheatLogic {
 	  }
 	
 	void check(Map<String, Object> lastState, List<Operation> lastMove, String lastMovePlayerId, List<Map<String, Object>> playersInfo){
-		if (lastState.size() == 0){
+		if (lastState.size() == 0) {
 			String[][] initialBoard = new String[][]{
 					  { "0", "B", "B", "B", "B", "B", "B", "0" },
 		    		  { "W", "0", "0", "0", "0", "0", "0", "W" },
@@ -47,6 +47,7 @@ public class CheatLogic {
 				for (int j=0;j<8;j++)
 					lastState.put(String.valueOf(i+1)+Character.toString((char)('A'+j)), initialBoard[i][j]);
 			lastState.put("turn","W");
+			return;
 		}
 		for (;;){
 			if (!checkOriginLegal(lastState,lastMove)) {System.out.println(1);break;}	// check whether origin is legal

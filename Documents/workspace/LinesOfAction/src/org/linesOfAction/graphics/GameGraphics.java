@@ -125,7 +125,11 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 			          public void onClick(ClickEvent event) {
 	    				if (enableClick && clickCheck(row,col)) {
 	    					enableClick = false; // cannot click another position until choosePosition is called
-	    					presenter.positionSelected(position,false);
+	    					String result = presenter.positionSelected(position,false);
+	    					if (result.equals("origin")) 
+	    						imageContainer[row][col].getWidget(0).getElement().addClassName("blink");
+	    					else if (result.equals("reset"))
+	    						imageContainer[row][col].getWidget(0).getElement().removeClassName("blink");
 			            }
 			          }
 				});	
@@ -137,7 +141,7 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 		
 
 	@Override
-	public void setState(int[][] board, int[][] lastBoard, String from, String to, int color, boolean isDrag) {
+	public void setState(int[][] board, int[][] lastBoard, String from, String to, int color, boolean isDrag, boolean self) {
 		int moveFromX = from.charAt(0) - '1';
 		int moveFromY = from.charAt(1) - 'A';
 		int moveToX = to.charAt(0) - '1';
@@ -156,7 +160,11 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 	    				if (enableClick && clickCheck(row,col)) {
 	    					enableClick = false; // cannot click another position until choosePosition is called
 	    					//System.out.println("set false! click");
-	    					presenter.positionSelected(position,false);
+	    					String result = presenter.positionSelected(position,false);
+	    					if (result.equals("origin")) 
+	    						imageContainer[row][col].getWidget(0).getElement().addClassName("blink");
+	    					else if (result.equals("reset"))
+	    						imageContainer[row][col].getWidget(0).getElement().removeClassName("blink");
 			            }
 			          }
 				});	
@@ -176,7 +184,11 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 					          public void onClick(ClickEvent event) {
 			    				if (enableClick && clickCheck(row,col)) {
 			    					enableClick = false; // cannot click another position until choosePosition is called
-			    					presenter.positionSelected(position,false);
+			    					String result = presenter.positionSelected(position,false);
+			    					if (result.equals("origin")) 
+			    						imageContainer[row][col].getWidget(0).getElement().addClassName("blink");
+			    					else if (result.equals("reset"))
+			    						imageContainer[row][col].getWidget(0).getElement().removeClassName("blink");
 					            }
 					          }
 			    		});
@@ -213,7 +225,11 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 			          public void onClick(ClickEvent event) {
 	    				if (enableClick && clickCheck(row,col)) {
 	    					enableClick = false; // cannot click another position until choosePosition is called
-	    					presenter.positionSelected(position,false);
+	    					String result = presenter.positionSelected(position,false);
+	    					if (result.equals("origin")) 
+	    						imageContainer[row][col].getWidget(0).getElement().addClassName("blink");
+	    					else if (result.equals("reset"))
+	    						imageContainer[row][col].getWidget(0).getElement().removeClassName("blink");
 			            }
 			          }
 				});	
@@ -307,7 +323,11 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 		          public void onClick(ClickEvent event) {
     				if (enableClick && clickCheck(moveFromX,moveFromY)) {
     					enableClick = false; // cannot click another position until choosePosition is called
-    					presenter.positionSelected(moveFrom,false);
+    					String result = presenter.positionSelected(moveFrom,false);
+    					if (result.equals("origin")) 
+    						imageContainer[moveFromX][moveFromY].getWidget(0).getElement().addClassName("blink");
+    					else if (result.equals("reset"))
+    						imageContainer[moveFromX][moveFromY].getWidget(0).getElement().removeClassName("blink");
 		            }
 		          }
 			});	
@@ -325,13 +345,18 @@ public class GameGraphics extends Composite implements GamePresenter.View{
 		          public void onClick(ClickEvent event) {
     				if (enableClick && clickCheck(moveToX,moveToY)) {
     					enableClick = false; // cannot click another position until choosePosition is called
-    					presenter.positionSelected(moveTo,false);
+    					String result = presenter.positionSelected(moveTo,false);
+    					if (result.equals("origin")) 
+    						imageContainer[moveToX][moveToY].getWidget(0).getElement().addClassName("blink");
+    					else if (result.equals("reset"))
+    						imageContainer[moveToX][moveToY].getWidget(0).getElement().removeClassName("blink");
 		            }
 		          }
 			});	
         	imageContainer[moveToX][moveToY].clear();
         	imageContainer[moveToX][moveToY].add(pieceImg);
         	playSound();
+        	presenter.sendMove();
         }
 	}
 	

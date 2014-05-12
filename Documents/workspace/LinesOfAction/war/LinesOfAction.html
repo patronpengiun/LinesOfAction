@@ -3,12 +3,13 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Cheat game</title>
+    <title>Lines of Action</title>
     <script type="text/javascript" language="javascript" src="linesofaction/linesofaction.nocache.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script>
 		function scaleBody() {
 		  var myGameWidth = 400;
-		  var myGameHeight = 550;
+		  var myGameHeight = 450;
 		  var scaleX = window.innerWidth / myGameWidth;
 		  var scaleY = window.innerHeight / myGameHeight;
 		  var scale = Math.min(scaleX, scaleY);
@@ -31,6 +32,7 @@
 		document.addEventListener("orientationchange", scaleBody);
 		window.onload = scaleBody;
 	</script>
+	<link rel="stylesheet" type="text/css" href="LinesOfAction.css">
     <style>
   .imgContainer {
     overflow:hidden;
@@ -54,10 +56,25 @@
 	}
 
     </style>
+    <script type="text/javascript" language="javascript">
+    	$(document).ready(function(){
+    		$('#zh').click(function(){
+    			window.location.href = "http://7.linesofactiongame.appspot.com/?locale=zh";
+    		});
+    		$('#en').click(function(){
+    			window.location.href = "http://7.linesofactiongame.appspot.com/?locale=en";
+    		});
+    		$("body").css("overflow", "hidden");
+    	});
+    </script>
   </head>
   <body>
+  	<div id="title" style="width:360px;font-size:18px;text-align:center;margin-bottom:13px;"></div>
     <div id="mainDiv"></div>
-    <!--<div><p style="width:360px">Internationalized, you can view English version by appending ?locale=en to the url, and view Chinese version by appending ?locale=zh to the url. <br /><br />As discussed in Google Group, removed drog & drop functionality because GWT-dnd has bug for auto-scaling</p></div>-->
+    <div id="i18n">
+    	<span id="en"><img src="en.png"/> English</span>
+    	<span id="zh"><img src="zh-hans.png"/> 中文</span>
+    </div>
     <input id="scale" type="hidden"></input>
     <audio id="sound">
     	<source src="pieceDown.mp3" type="audio/mpeg">

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 
 public class GamePresenter {
 	
@@ -21,7 +22,7 @@ public class GamePresenter {
 		void setPresenter(GamePresenter gamepresenter);
 		
 		// present the animation of last move to the player 
-		void setState(int[][] state, int[][] lastState, String from, String to, int color, boolean isDrag);
+		void setState(int[][] state, int[][] lastState, String from, String to, int color, boolean isDrag, boolean self);
 		
 		// present the initial state of the board to the player, and set the player's color
 		void setInitialState(String color);
@@ -56,6 +57,7 @@ public class GamePresenter {
 	private String destination;
 	
 	private boolean initialFlag; 
+	private boolean flag = true;
 	
 	public GamePresenter(View view, Container container) {
 		this.view = view;
@@ -105,6 +107,39 @@ public class GamePresenter {
 		    		  { 2, 0, 0, 0, 0, 0, 0, 2 },
 		    		  { 0, 1, 1, 1, 1, 1, 1, 0 }
 		    		};
+			if (newState.size() == 0){
+				if (flag){
+					flag = !flag;
+					if (yourColor.equals("W")){
+						List<Operation> theMove = new ArrayList<Operation>();
+						theMove.add(new SetTurn(updateUI.getPlayerIds().get(0)));
+						container.sendMakeMove(theMove);
+					}
+					return;
+				}
+				
+			}
+				
+			if (updateUI.isAiPlayer()) {
+				if (!isMyTurn()){
+					return;
+				}
+				
+				Heuristic gameHeuristic = new Heuristic();
+				AlphaBetaPruning pruning = new AlphaBetaPruning(gameHeuristic);
+				List<Operation> moves = pruning.findBestMove(newState,2,new Timer(){
+					public void run(){
+						System.out.println("timer start");
+					}
+				});
+				origin = ((Set)moves.get(0)).getKey();
+				destination = ((Set)moves.get(1)).getKey();
+				String winnerId = checkWin(board,origin,destination);
+				if (Integer.parseInt(winnerId)>=0) makeMoveWin(winnerId,false); 
+				else makeMoveContinue(false); 
+				
+				return;
+			}
 		}
 		else{
 			for (int i=0;i<8;i++) {
@@ -151,7 +186,7 @@ public class GamePresenter {
 			boolean wasDrag = newState.get("isDrag").equals("true") ? true : false;
 	
 			if (updateUI.isViewer()) {
-			      view.setState(board,lastBoard,moveFrom,moveTo,color,wasDrag);
+			      view.setState(board,lastBoard,moveFrom,moveTo,color,wasDrag,false);
 			      return;
 			    }
 			if (updateUI.isAiPlayer()) {
@@ -171,12 +206,11 @@ public class GamePresenter {
 				if (Integer.parseInt(winnerId)>=0) makeMoveWin(winnerId,false); 
 				else makeMoveContinue(false); 
 				
-				// TODO: implement AI in a later HW!
-				//container.sendMakeMove(..);
 				return;
 			}
 			
-			view.setState(board,lastBoard,moveFrom,moveTo,color,wasDrag);
+			if ((yourColor.equals("W")?2:1) != color)
+				view.setState(board,lastBoard,moveFrom,moveTo,color,wasDrag,false);
 			
 			if (lastMove.size() == 6){
 				if (((EndGame)lastMove.get(5)).getPlayerIdToScore().get(yourPlayerId) != null)
@@ -211,23 +245,35 @@ public class GamePresenter {
 	}
 	
 	// The view can only call this method if the presenter called {@link View#choosePosition}
-	public void positionSelected(String position, boolean isDrag){
+	public String positionSelected(String position, boolean isDrag){
 		check(isMyTurn());
 		int color;
 		if (yourColor.equals("W")) color=2; else color=1;
-		if ("".equals(origin)) {origin = position;choosePosition(2,0);} // origin selected, continue;
+		if ("".equals(origin)) {origin = position;choosePosition(2,0);return "origin";} // origin selected, continue;
 		else{
 			if (position.equals(origin)) {
 				origin="";
 				choosePosition(1,color);
+				return "reset";
 				} // origin canceled, reset graphics, continue;
 			else {
 				destination = position;
-				String winnerId = checkWin(board,origin,destination);
-				if (Integer.parseInt(winnerId)>=0) makeMoveWin(winnerId,isDrag); // move made and someone wins the game
-				else makeMoveContinue(isDrag); // move made and the game continue
+				int[][] nextBoard = new int[8][8];
+				for (int i=0;i<8;i++)
+					for (int j=0;j<8;j++)
+						nextBoard[i][j] = board[i][j];
+				nextBoard[origin.charAt(0)-'1'][origin.charAt(1)-'A'] = 0;
+				nextBoard[destination.charAt(0)-'1'][destination.charAt(1)-'A'] = yourColor.equals("W")?2:1;
+				view.setState(nextBoard, board, origin, destination, yourColor.equals("W")?2:1, false, true);
+				return "move";
 			}
 		}
+	}
+	
+	public void sendMove(){
+		String winnerId = checkWin(board,origin,destination);
+		if (Integer.parseInt(winnerId)>=0) makeMoveWin(winnerId,false); // move made and someone wins the game
+		else makeMoveContinue(false); // move made and the game continue
 	}
 	
 	private void makeMoveWin(String winnerId, boolean isDrag){
